@@ -4,7 +4,7 @@ library(tidyverse)
 library(dplyr)
 
 
-# Set your Census API key (replace with your actual API key if needed)
+# Set Census API key 
 Sys.getenv("CENSUS_API_KEY")
 
 # Define the years for data extraction
