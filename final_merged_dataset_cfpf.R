@@ -83,13 +83,12 @@ all_county_data$county <- gsub("\\bcity\\b", "City", all_county_data$county, ign
 # View the first few rows of the data
 head(all_county_data)
 
-# Load proposal data and clean it
-proposal_data_cfpf_r3 <- read.csv("/path/to/your/proposal_data_cfpf_r3.csv")
-proposal_data_cfpf_r3_cleaned <- proposal_data_cfpf_r3 %>%
-  mutate(GEOID = as.character(GEOID))  # Ensure GEOID format consistency
+# Load proposal data 
+proposal_dataset <- read.csv("/Users/sikandar/Desktop/proposal_dataset.csv")
+
 
 # Merge the county data with the proposal data using GEOID
-final_data <- proposal_data_cfpf_r3_cleaned %>%
+final_data <- proposal_dataset %>%
   left_join(all_county_data, by = "GEOID")
 
 # View the merged dataset
