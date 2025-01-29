@@ -1,8 +1,8 @@
 # Load required libraries
 library(tidycensus)
 library(tidyverse)
-library(ggplot2)
-library(purrr)
+library(dplyr)
+
 
 # Set your Census API key (replace with your actual API key if needed)
 Sys.getenv("CENSUS_API_KEY")
@@ -56,22 +56,6 @@ get_data_for_year <- function(year) {
 # Fetch and combine data for all years
 all_county_data <- map_dfr(years, get_data_for_year)
 
-# Rename columns for clarity
-all_county_data <- all_county_data %>%
-  rename(
-    population = B01003_001,
-    median_income = B19013_001,
-    poverty = B17021_002,
-    unemployment = B23025_005,
-    population_under_5 = B01001_003,
-    population_over_65 = B01001_020,
-    homeownership = B25003_002,
-    white_population = B03002_003,
-    black_population = B03002_004,
-    asian_population = B03002_006,
-    native_population = B03002_005,
-    hispanic_population = B03002_012
-  )
 
 # Relocate population column
 all_county_data <- all_county_data %>%
@@ -83,18 +67,22 @@ all_county_data$county <- gsub("\\bcity\\b", "City", all_county_data$county, ign
 # View the first few rows of the data
 head(all_county_data)
 
+# Combine the two datasets by rows
+va_2022 <- bind_rows(va_place_data, va_data_2022)
+
+
 # Load proposal data 
 proposal_dataset <- read.csv("/Users/sikandar/Desktop/proposal_dataset.csv")
 
 
 # Merge the county data with the proposal data using GEOID
 final_data <- proposal_dataset %>%
-  left_join(all_county_data, by = "GEOID")
+  left_join(va_2022, by = "GEOID")
 
 # View the merged dataset
 head(final_data)
 
 # Save the final merged data
-write.csv(final_data, "/path/to/your/final_merged_data_with_race.csv", row.names = FALSE)
+write.csv(final_data, "/Users/sikandar/Documents/Work/Research /Disaster Relief Fuding/merged_dataset_with_race.csv", row.names = FALSE)
 
 cat("Final merged dataset with race demographics has been saved.")
